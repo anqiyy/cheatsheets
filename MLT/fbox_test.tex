@@ -1,0 +1,57 @@
+\documentclass[7pt,landscape]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[
+    total={130mm,277mm},
+    top=0mm,
+    bottom=0mm,
+    left=0mm,
+    marginparwidth=0mm,
+    marginparsep=0mm,
+    centering]{geometry}
+\usepackage{multicol}
+\usepackage{etoolbox}
+
+% Universal fbox widening
+\makeatletter
+\let\oldfbox\fbox
+\renewcommand{\fbox}[1]{%
+  \oldfbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{#1}}%
+}
+\makeatother
+
+% Optional: Adjust box padding globally
+\setlength{\fboxsep}{4pt} % Inner padding
+\setlength{\fboxrule}{0.8pt} % Border thickness
+
+\begin{document}
+\begin{multicols}{3}
+
+% Now all fboxes will auto-expand
+\fbox{This box fills column width automatically}
+
+\fbox{%
+  Theorem content with math: \\
+  $\forall x \in X, \exists y \in Y$
+}
+
+\fbox{\begin{minipage}[t]
+\textbf{Realizable (Separable) case}
+When there is a model that separates perfectly.
+There is \( h^* \in \mathcal{H} \) that achieves perfect separation between classes, i.e. zero true loss:  
+    $ L_({\mathcal{D},f})(h^*) = 0$, in-sample loss \( L_S(h^*) = 0 \)
+
+\textbf{Agnostic case}
+    When there is no perfect separator, find the best imperfect one
+\end{minipage}}
+
+% \vspace{\baselineskip} % Add vertical space between boxes
+
+\fbox{\begin{minipage}[t]
+\textbf{Empirical loss/risk }
+of any hypothesis \( h \in H \) as
+$ L_S(h) \overset{\text{def}}{=} \frac{|\{i \in [m] : h(x_i) \neq y_i\}|}{m}$
+\end{minipage}}
+
+
+\end{multicols}
+\end{document}

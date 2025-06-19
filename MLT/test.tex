@@ -1,0 +1,146 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+        
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{3}
+
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \Large{\textbf{PAC Learning Cheat Sheet}} \\
+\end{center}
+
+\section{Basic Definitions}
+\begin{tabular}{@{}ll@{}}
+Hypothesis class & $\mathcal{H}$ \\
+Training sample & $S = \{(x_i,y_i)\}_{i=1}^m$ \\
+True loss & $L_{\mathcal{D},f}(h) = \mathbb{P}[h(x)\neq f(x)]$ \\
+Empirical loss & $L_S(h) = \frac{1}{m}|\{i:h(x_i)\neq y_i\}|$ \\
+\end{tabular}
+
+\section{PAC Learnability}
+A hypothesis class $\mathcal{H}$ is PAC learnable if $\exists$ algorithm $A$ and function $m_\mathcal{H}:(0,1)^2 \to \mathbb{N}$ such that $\forall \epsilon,\delta \in (0,1)$, $\forall$ distributions $\mathcal{D}$:
+\[ \mathbb{P}[L_{\mathcal{D},f}(h_S) \leq \epsilon] \geq 1-\delta \]
+for sample size $m \geq m_\mathcal{H}(\epsilon,\delta)$.
+
+\section{Finite Hypothesis Classes}
+For finite $\mathcal{H}$ in realizable case:
+\[ m \geq \frac{\log(|\mathcal{H}|/\delta)}{\epsilon} \]
+guarantees PAC learnability.
+
+\section{Agnostic PAC Learning}
+When no perfect $h^*$ exists:
+\[ L_{\mathcal{D}}(h_S) \leq \min_{h'\in\mathcal{H}} L_{\mathcal{D}}(h') + \epsilon \]
+with probability $\geq 1-\delta$.
+
+\section{Empirical Risk Minimization}
+ERM algorithm:
+\[ h_S = \operatorname*{argmin}_{h\in\mathcal{H}} L_S(h) \]
+
+\section{Uniform Convergence}
+$\mathcal{H}$ has uniform convergence if $\exists m_{\mathcal{H}}^{UC}$ such that $\forall h\in\mathcal{H}$:
+\[ |L_S(h) - L_{\mathcal{D}}(h)| \leq \epsilon \]
+with probability $\geq 1-\delta$.
+
+\section{Chernoff-Hoeffding Bound}
+For i.i.d. random variables $\theta_i \in [0,1]$:
+\[ \mathbb{P}\left[\left|\frac{1}{m}\sum_{i=1}^m \theta_i - \mu\right| > \epsilon\right] \leq 2e^{-2m\epsilon^2} \]
+
+\section{Representative Samples}
+Sample $S$ is $\epsilon$-representative if:
+\[ \forall h\in\mathcal{H}, |L_S(h)-L_{\mathcal{D}}(h)| \leq \epsilon \]
+
+\section{Key Theorems}
+\begin{itemize}
+\item Every finite $\mathcal{H}$ has uniform convergence
+\item Finite $\mathcal{H}$ are agnostic PAC-learnable
+\item VC dimension characterizes PAC learnability for infinite $\mathcal{H}$
+\end{itemize}
+
+\section{General Loss Functions}
+For general loss $\ell:\mathcal{H}\times Z\to\mathbb{R}_+$:
+\[ L_{\mathcal{D}}(h) = \mathbb{E}_{z\sim\mathcal{D}}[\ell(h,z)] \]
+\[ L_S(h) = \frac{1}{m}\sum_{i=1}^m \ell(h,z_i) \]
+
+\section{VC Dimension}
+The VC dimension $d$ of $\mathcal{H}$ is the maximal size of a set shattered by $\mathcal{H}$. For PAC learning:
+\[ m \geq C\frac{d + \log(1/\delta)}{\epsilon^2} \]
+
+\section{No Free Lunch Theorem}
+For any learning algorithm, there exists a distribution where:
+\[ \mathbb{P}[L_{\mathcal{D}}(h_S) > 1/8] \geq 1/7 \]
+when $m \leq |X|/2$.
+
+\section{Bias-Complexity Tradeoff}
+\[ L_{\mathcal{D}}(h_S) \leq \underbrace{\min_{h\in\mathcal{H}} L_{\mathcal{D}}(h)}_{\text{Bias}} + \underbrace{\sqrt{\frac{\log|\mathcal{H}|}{m}}}_{\text{Complexity}} \]
+
+\section{Key Equations}
+\begin{itemize}
+\item Empirical risk: 
+\[ L_S(h) = \frac{1}{m}\sum_{i=1}^m \mathbb{I}[h(x_i)\neq y_i] \]
+\item Agnostic bound:
+\[ m \geq \frac{2\log(2|\mathcal{H}|/\delta)}{\epsilon^2} \]
+\item Uniform convergence:
+\[ \mathbb{P}[\exists h\in\mathcal{H}: |L_S(h)-L_{\mathcal{D}}(h)|>\epsilon] \leq 2|\mathcal{H}|e^{-2m\epsilon^2} \]
+\end{itemize}
+
+\section{Example Hypothesis Classes}
+\begin{itemize}
+\item Thresholds in $\mathbb{R}$: VC-dim = 1
+\item Axis-aligned rectangles: VC-dim = 4
+\item Linear classifiers in $\mathbb{R}^d$: VC-dim = d+1
+\end{itemize}
+
+\section{Fundamental Theorem}
+For binary classification, these are equivalent:
+\begin{itemize}
+\item $\mathcal{H}$ is PAC learnable
+\item $\mathcal{H}$ has uniform convergence
+\item $\mathcal{H}$ has finite VC dimension
+\end{itemize}
+
+\rule{0.3\linewidth}{0.25pt}
+\scriptsize
+
+
+
+\end{multicols}
+\end{document}
